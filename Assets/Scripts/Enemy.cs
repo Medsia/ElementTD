@@ -4,27 +4,34 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public float Speed, RotationSpeed, HP;
-    public Transform[] Points;
+    public float Speed;
+    public float RotationSpeed;
+    public float HP;
 
+    public Transform[] waypoints;
     private Transform currentPoint;
+
     private int index;
+
     private Vector3 direction;
+
     private GameResources res;
-    // Start is called before the first frame update
+
+
     void Start()
     {
         index = 0;
-        currentPoint = Points[index];
+
+        waypoints = Waypoints.points;
+        currentPoint = waypoints[index];
+
         res = FindObjectOfType<GameResources>();
-
-
     }
 
-    // Update is called once per frame
+
     void Update()
     {
-        direction = Points[index].position - transform.position;
+        direction = waypoints[index].position - transform.position;
         Vector3 newDirection = Vector3.RotateTowards(transform.forward, direction, RotationSpeed * Time.deltaTime, 0);
         transform.rotation = Quaternion.LookRotation(newDirection);
 
@@ -33,14 +40,14 @@ public class Enemy : MonoBehaviour
         if (transform.position == currentPoint.position)
         {
             index++;
-            if(index >= Points.Length)
+            if(index >= waypoints.Length)
             {
                 Destroy(gameObject);
                 res.LostLive();
             }
             else
             {
-                currentPoint = Points[index];
+                currentPoint = waypoints[index];
             }
             
         }
