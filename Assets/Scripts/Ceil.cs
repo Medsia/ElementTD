@@ -20,7 +20,7 @@ public class Ceil : MonoBehaviour
 
    private void OnMouseUp()
     {
-        if(CanBuild && res.Gold >= res.TowerCost)
+        if(CanBuild && res.gold >= res.towerCost)
         {
             Instantiate(TowerPrefab, transform.position, Quaternion.identity);
             CanBuild = false;
