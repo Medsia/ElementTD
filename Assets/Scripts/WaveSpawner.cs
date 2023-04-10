@@ -15,12 +15,8 @@ public class WaveSpawner : MonoBehaviour
     private string countdownText = "Time left: ";
     public Text waveCountdownText;
 
-    private int startMobCount = 0;
-    public int mobCountIncrement;
-    private int currentWaveMobCount = 0;
-    private float mobSpawnOffset = 0.5f;
-
-    private List<Transform> mobsToSpawn = new List<Transform>();
+    public int waveMobCount;
+    private float mobSpawnOffset = 0.3f;
 
     public Transform exampleMob;
 
@@ -28,9 +24,6 @@ public class WaveSpawner : MonoBehaviour
     void Start()
     {
         timeToNextWave = timeBetweenWaves;
-        currentWaveMobCount = startMobCount;
-
-        StartCoroutine(MobSpawner());
     }
 
 
@@ -50,25 +43,16 @@ public class WaveSpawner : MonoBehaviour
     {
         currentWaveIndex++;
         timeToNextWave = timeBetweenWaves;
-        currentWaveMobCount += mobCountIncrement;
 
-        for (int i = 0; i < currentWaveMobCount; i++)
-        {
-            mobsToSpawn.Add(exampleMob);
-        }
+        StartCoroutine(MobSpawner(exampleMob));
     }
 
 
-    IEnumerator MobSpawner()
+    IEnumerator MobSpawner(Transform mob)
     {
-        while (true)
+        for (int i = 0; i < waveMobCount; i++)
         {
-            if(mobsToSpawn.Count > 0)
-            {
-                SpawnMob(mobsToSpawn.ElementAt(0));
-                mobsToSpawn.RemoveAt(0);
-            }
-
+            SpawnMob(mob);
             yield return new WaitForSeconds(mobSpawnOffset);
         }
     }
