@@ -7,6 +7,7 @@ public class Tower : MonoBehaviour
     public float Radius, FireDelay, Damage;
     public Transform BulletPrefab;
     public LayerMask EnemyLayer;
+    public int cost;
 
     private float timeToFire;
     private Transform gun, enemy, firePoint;

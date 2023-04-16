@@ -10,21 +10,23 @@ public class Ceil : MonoBehaviour
 
     private Renderer _renderer;
     private GameResources res;
+    private Tower tower;
 
-        // Start is called before the first frame update
+    // Start is called before the first frame update
     void Start()
     {
         _renderer = GetComponent<Renderer>();
         res = FindObjectOfType<GameResources>();
+        tower = TowerPrefab.GetComponent<Tower>();
     }
 
    private void OnMouseUp()
     {
-        if(CanBuild && res.gold >= res.towerCost)
+        if(CanBuild && res.gold >= tower.cost)
         {
             Instantiate(TowerPrefab, transform.position, Quaternion.identity);
             CanBuild = false;
-            res.Build();
+            res.Build(tower.cost);
         }
     }
 
