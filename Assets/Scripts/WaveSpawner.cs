@@ -15,15 +15,22 @@ public class WaveSpawner : MonoBehaviour
     private string countdownText = "Time left: ";
     public Text waveCountdownText;
 
-    public int waveMobCount;
-    private float mobSpawnOffset = 0.3f;
+    public int waveEnemyCount;
+    private float enemySpawnOffset = 0.3f;
 
-    public Transform exampleMob;
+    private GameObject currentWaveEnemy;
+    private GameObject nextWaveEnemy;
+
+    private EnemyGenerator _enemyGenerator;
 
 
     void Start()
     {
+        _enemyGenerator = this.gameObject.GetComponent<EnemyGenerator>();
+
         timeToNextWave = timeBetweenWaves;
+
+        nextWaveEnemy = _enemyGenerator.GenerateEnemy(currentWaveIndex+1);
     }
 
 
@@ -43,23 +50,29 @@ public class WaveSpawner : MonoBehaviour
     {
         currentWaveIndex++;
         timeToNextWave = timeBetweenWaves;
+        currentWaveEnemy = nextWaveEnemy;
 
-        StartCoroutine(MobSpawner(exampleMob));
+        StartCoroutine(EnemySpawner(currentWaveEnemy));
+
+        nextWaveEnemy = _enemyGenerator.GenerateEnemy(currentWaveIndex + 1);
     }
 
 
-    IEnumerator MobSpawner(Transform mob)
+    IEnumerator EnemySpawner(GameObject enemy)
     {
-        for (int i = 0; i < waveMobCount; i++)
+        for (int i = 0; i < waveEnemyCount; i++)
         {
-            SpawnMob(mob);
-            yield return new WaitForSeconds(mobSpawnOffset);
+            SpawnEnemy(enemy);
+            yield return new WaitForSeconds(enemySpawnOffset);
         }
+
+        Destroy(currentWaveEnemy);
     }
 
 
-    void SpawnMob(Transform mob)
+    void SpawnEnemy(GameObject enemy)
     {
-        Instantiate(mob, this.transform.position, this.transform.rotation);
+        var spawnedEnemy = Instantiate(enemy, this.transform.position, this.transform.rotation);
+        spawnedEnemy.SetActive(true);
     }
 }

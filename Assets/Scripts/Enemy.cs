@@ -4,45 +4,43 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public float speed;
-    private float rotationSpeed = 5f;
-
     public float maxHP;
-    [SerializeField]
-    private float currentHP;
     public float teleportHPLossPercent;
+    public float speed;
 
-    public Transform[] waypoints;
-    private Transform currentPoint;
 
-    [SerializeField]
-    private int index;
+    private float currentHP;
+
+    private float rotationSpeed = 10f;
+
+    private Transform[] waypoints;
+    private int currentWaypointIndex;
+    private Transform currentWaypoint;
 
     private Vector3 startDirection;
     private Vector3 direction;
 
-    private GameResources res;
+    private GameResources resources;
 
 
     void Start()
     {
-        index = 1;
-
+        currentWaypointIndex = 1;
         waypoints = Waypoints.points;
-        currentPoint = waypoints[index];
+        currentWaypoint = waypoints[currentWaypointIndex];
 
-        startDirection = waypoints[index].position - transform.position;
+        startDirection = waypoints[currentWaypointIndex].position - transform.position;
 
         currentHP = maxHP;
 
-        res = FindObjectOfType<GameResources>();
+        resources = FindObjectOfType<GameResources>();
     }
 
 
     void Respawn()
     {
-        index = 1;
-        currentPoint = waypoints[index];
+        currentWaypointIndex = 1;
+        currentWaypoint = waypoints[currentWaypointIndex];
 
         var hpLoss = maxHP * teleportHPLossPercent / 100f;
         currentHP -= hpLoss;
@@ -59,23 +57,23 @@ public class Enemy : MonoBehaviour
             Destroy(gameObject);
         }
 
-        direction = waypoints[index].position - transform.position;
+        direction = waypoints[currentWaypointIndex].position - transform.position;
         Vector3 newDirection = Vector3.RotateTowards(transform.forward, direction, rotationSpeed * Time.deltaTime, 0);
         transform.rotation = Quaternion.LookRotation(newDirection);
 
-        transform.position = Vector3.MoveTowards(transform.position, currentPoint.position, speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, currentWaypoint.position, speed * Time.deltaTime);
 
-        if (transform.position == currentPoint.position)
+        if (transform.position == currentWaypoint.position)
         {
-            index++;
-            if(index >= waypoints.Length)
+            currentWaypointIndex++;
+            if(currentWaypointIndex >= waypoints.Length)
             {
                 Respawn();
-                res.LostLive();
+                resources.LostLive();
             }
             else
             {
-                currentPoint = waypoints[index];
+                currentWaypoint = waypoints[currentWaypointIndex];
             }
         }
     }
@@ -86,6 +84,7 @@ public class Enemy : MonoBehaviour
         if (other.tag == "Bullet")
         {
             currentHP -= other.GetComponent<Bullet>().Damage;
+            Destroy(other.gameObject);
         }
     }
 
