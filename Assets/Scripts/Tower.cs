@@ -7,15 +7,18 @@ public class Tower : MonoBehaviour
     public float Radius, FireDelay, Damage;
     public Transform BulletPrefab;
     public LayerMask EnemyLayer;
+    public int cost;
 
     private float timeToFire;
     private Transform gun, enemy, firePoint;
+    private Quaternion gunDefaultRotation;
     // Start is called before the first frame update
     void Start()
     {
         timeToFire = FireDelay;
         gun = transform.GetChild(0);
         firePoint = gun.GetChild(0);
+        gunDefaultRotation = transform.GetChild(0).rotation;
     }
 
     // Update is called once per frame
@@ -26,20 +29,20 @@ public class Tower : MonoBehaviour
         else if (enemy)
             Fire();
 
-        if(enemy)
+        if (enemy)
         {
             Vector3 lookAt = enemy.position;
-            lookAt.y = transform.position.y;
-            gun.rotation = Quaternion.LookRotation(gun.position - lookAt);
+            lookAt.y = gun.position.y;
+            gun.rotation = Quaternion.LookRotation(gun.position - lookAt) * gunDefaultRotation;
 
-            if (Vector3.Distance(gun.position, enemy.position) > Radius)
+            if (Vector3.Distance(transform.position, enemy.position) > Radius)
                 enemy = null;
         }
         else
         {
             FindEnemy();
         }
-    }   
+    }
 
     void Fire()
     {
@@ -54,7 +57,7 @@ public class Tower : MonoBehaviour
     {
         Collider[] colls = Physics.OverlapSphere(transform.position, Radius, EnemyLayer);
 
-        if(colls.Length > 0)
+        if (colls.Length > 0)
         {
             enemy = colls[0].transform;
         }

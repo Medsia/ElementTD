@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GameResources : MonoBehaviour
 {
-    public int gold, towerCost, income, lives;
+    public int gold, income, lives;
     public Text goldText;
     public Text livesText;
 
@@ -14,7 +14,7 @@ public class GameResources : MonoBehaviour
         goldText.text = gold.ToString();
         livesText.text = lives.ToString();
     }
-    public void Build()
+    public void Build(int towerCost)
     {
         gold -= towerCost;
         goldText.text = gold.ToString();
