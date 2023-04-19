@@ -1,98 +1,32 @@
-//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-//using UnityEngine.EventSystems;
-//public class CardManager : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler
-//{
-//    private Card _cardSO;
-//    public Card CardSO
-//    {
-//        get => _cardSO;
-//        set { _cardSO = value; }
-//    }
+using UnityEngine.EventSystems;
+using UnityEngine;
+using UnityEngine.UI;
 
-//    private GameObject _draggingBuilding;
-//    private Building _building;
+public class CardManager : MonoBehaviour, /*IPointerEnterHandler, IPointerExitHandler,*/ IPointerClickHandler
+{
+    public Transform TowerPrefab;
 
-//    private Vector2Int _gridSize = new Vector2Int(15, 10);
-//    private bool _isAvailableToBuild;
+    private Image objectImage;
+    private TowerList towerList;
 
+    void Start()
+    {
+        objectImage = GetComponent<Image>(); // получаем компонент Image у текущего объекта
+    }
 
-//    private GridController _gridController;
+    //public void OnPointerEnter(PointerEventData eventData)
+    //{
+    //    objectImage.color = Color.yellow; // изменяем цвет компонента Image на желтый при наведении мыши на объект
+    //}
 
-//    private void Awake()
-//    {
-//        _gridController = GridController.Instance;
-//        _gridController.Grid = new Building[_gridSize.x, _gridSize.y];
-//    }
-//    public void OnDrag(PointerEventData eventData)
-//    {
-//        if (_draggingBuilding != null)
-//        {
-//            var groundPlane = new Plane(Vector3.up, Vector3.zero);
-//            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //public void OnPointerExit(PointerEventData eventData)
+    //{
+    //    objectImage.color = Color.white; // изменяем цвет компонента Image на белый при уходе мыши с объекта
+    //}
 
-//            if (groundPlane.Raycast(ray, out float pos))
-//            {
-//                Vector3 worldPosition = ray.GetPoint(pos);
-//                int x = Mathf.RoundToInt(worldPosition.x);
-//                int z = Mathf.RoundToInt(worldPosition.z);
-
-//                if (x < 0 || x > _gridSize.x - _building.BuildingSize.x)
-//                    _isAvailableToBuild = false;
-//                else if (z < 0 || z > _gridSize.y - _building.BuildingSize.y)
-//                    _isAvailableToBuild = false;
-//                else
-//                    _isAvailableToBuild = true;
-
-//                if (_isAvailableToBuild && IsPlaceTaken(x, z)) _isAvailableToBuild = false;
-
-//                if ((z % 2 == 1) || (x % 2 == 1)) _isAvailableToBuild = false;
-
-//                _draggingBuilding.transform.position = new Vector3(x, 0, z);
-
-//                _building.SetColor(_isAvailableToBuild);
-//            }
-//        }
-//    }
-
-//    public void OnPointerDown(PointerEventData eventData)
-//    {
-//        _draggingBuilding = Instantiate(_cardSO.prefab, Vector3.zero, Quaternion.identity);
-
-//        _building = _draggingBuilding.GetComponent<Building>();
-
-//        var groundPlane = new Plane(Vector3.up, Vector3.zero);
-//        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-//        if (groundPlane.Raycast(ray, out float pos))
-//        {
-//            Vector3 worldPosition = ray.GetPoint(pos);
-//            int x = Mathf.RoundToInt(worldPosition.x);
-//            int z = Mathf.RoundToInt(worldPosition.z);
-
-//            _draggingBuilding.transform.position = new Vector3(x, 0, z);
-//        }
-//    }
-
-//    public void OnPointerUp(PointerEventData eventData)
-//    {
-//        if (!_isAvailableToBuild)
-//            Destroy(_draggingBuilding);
-//        else
-//        {
-
-//            _gridController.Grid[(int)_draggingBuilding.transform.position.x, (int)_draggingBuilding.transform.position.z] = _building;
-//            _building.ResetColor();
-//        }
-//    }
-
-//    private bool IsPlaceTaken(int x, int y)
-//    {
-//        if (_gridController.Grid[x, y] != null)
-//        {
-//            return true;
-//        }
-//        return false;
-//    }
-//}
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Ceil.ChangeTowerToBuild(TowerPrefab);
+        objectImage.color = Color.yellow;
+    }
+}
