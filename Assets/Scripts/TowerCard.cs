@@ -2,16 +2,16 @@ using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CardManager : MonoBehaviour, /*IPointerEnterHandler, IPointerExitHandler,*/ IPointerClickHandler
+public class TowerCard : MonoBehaviour, /*IPointerEnterHandler, IPointerExitHandler,*/ IPointerClickHandler
 {
     public Transform TowerPrefab;
 
     private Image objectImage;
-    private TowerList towerList;
 
     void Start()
     {
         objectImage = GetComponent<Image>(); // получаем компонент Image у текущего объекта
+        Ceil.TowerToBuildChanged += ResetColor;
     }
 
     //public void OnPointerEnter(PointerEventData eventData)
@@ -28,5 +28,9 @@ public class CardManager : MonoBehaviour, /*IPointerEnterHandler, IPointerExitHa
     {
         Ceil.ChangeTowerToBuild(TowerPrefab);
         objectImage.color = Color.yellow;
+    }
+    public void ResetColor()
+    {
+        objectImage.color = Color.white;
     }
 }
